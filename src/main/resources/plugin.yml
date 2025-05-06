@@ -1,0 +1,27 @@
+name: SNGMCEconomy
+version: 1.0
+main: sngmc.build.SNGMCEconomy
+depend: [Vault]
+commands:
+  balance:
+    description: Проверить баланс
+    aliases: [bal, money]
+  pay:
+    description: Перевести деньги игроку
+    usage: /pay <игрок> <сумма>
+  setmoney:
+    description: Установить баланс игрока
+    usage: /setmoney <игрок> <сумма>
+    permission: sngmceconomy.admin
+  givemoney:
+    description: Выдать деньги игроку
+    usage: /givemoney <игрок> <сумма>
+    permission: sngmceconomy.admin
+  takemoney:
+    description: Забрать деньги у игрока
+    usage: /takemoney <игрок> <сумма>
+    permission: sngmceconomy.admin
+permissions:
+  sngmceconomy.admin:
+    description: Доступ к админ командам экономики
+    default: op
