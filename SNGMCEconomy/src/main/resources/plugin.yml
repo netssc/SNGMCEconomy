@@ -1,0 +1,21 @@
+name: SNGMCEconomy
+version: 1.0
+main: sngmc.build.SNGMCEconomy
+depend: [Vault]
+author: [SNGMC]
+website: plugins.sngmc.ru
+commands:
+  balance:
+    description: Проверить баланс
+    aliases: [bal, money]
+  pay:
+    description: Перевести деньги игроку
+    usage: /pay <игрок> <сумма>
+  eco:
+    description: Управление экономикой (админ)
+    usage: /eco <give|set|take> <игрок> <сумма>
+    permission: sngmceconomy.admin
+permissions:
+  sngmceconomy.admin:
+    description: Доступ к админ командам экономики
+    default: op
