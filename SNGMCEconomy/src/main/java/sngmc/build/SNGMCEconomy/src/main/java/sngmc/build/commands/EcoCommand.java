@@ -48,7 +48,7 @@ public class EcoCommand implements CommandExecutor {
                             target.getUniqueId().toString(),
                             amount,
                             "ADMIN_GIVE",
-                            "Сервер",
+                            "SERVER",
                             target.getName()
                     );
                     sender.sendMessage(plugin.getConfigManager().getMessage("money-given",
@@ -65,8 +65,8 @@ public class EcoCommand implements CommandExecutor {
                             oldBalance < amount ? target.getUniqueId().toString() : "SERVER",
                             Math.abs(amount - oldBalance),
                             "ADMIN_SET",
-                            oldBalance > amount ? target.getName() : "Сервер",
-                            oldBalance < amount ? target.getName() : "Сервер"
+                            oldBalance > amount ? target.getName() : "SERVER",
+                            oldBalance < amount ? target.getName() : "SERVER"
                     );
                     sender.sendMessage(plugin.getConfigManager().getMessage("money-set",
                             "%player%", target.getName(),
@@ -85,7 +85,7 @@ public class EcoCommand implements CommandExecutor {
                             amount,
                             "ADMIN_TAKE",
                             target.getName(),
-                            "Сервер"
+                            "SERVER"
                     );
                     sender.sendMessage(plugin.getConfigManager().getMessage("money-taken",
                             "%player%", target.getName(),
