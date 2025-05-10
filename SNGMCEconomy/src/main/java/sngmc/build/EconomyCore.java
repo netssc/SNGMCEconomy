@@ -42,7 +42,9 @@ public class EconomyCore implements Economy {
     public void saveData() {
         dataManager.saveBalances(balances);
     }
-
+    public Map<String, Double> getBalances() {
+        return balances;
+    }
     public double getPlayerBalance(String uuid) {
         return balances.getOrDefault(uuid, config.getConfig().getDouble("economy.starting-balance", 100.0));
     }
