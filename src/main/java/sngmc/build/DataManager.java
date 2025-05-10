@@ -1,4 +1,3 @@
-// DataManager.java
 package sngmc.build;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,17 +13,28 @@ public class DataManager {
     private FileConfiguration dataConfig;
     private File transactionsFile;
     private FileConfiguration transactionsConfig;
+    private MySQLManager mySQLManager;
+    private StorageType storageType;
 
     public DataManager(SNGMCEconomy plugin) {
         this.plugin = plugin;
+        this.storageType = StorageType.valueOf(plugin.getConfigManager().getConfig().getString("storage.type", "YAML").toUpperCase());
     }
 
     public void setup() {
+        if (storageType == StorageType.MYSQL) {
+            this.mySQLManager = new MySQLManager(plugin);
+            mySQLManager.connect();
+        } else {
+            setupYaml();
+        }
+    }
+
+    private void setupYaml() {
         if (!plugin.getDataFolder().exists()) {
             plugin.getDataFolder().mkdir();
         }
 
-        // Настройка файла для балансов
         dataFile = new File(plugin.getDataFolder(), "balances.yml");
         if (!dataFile.exists()) {
             try {
@@ -35,7 +45,6 @@ public class DataManager {
         }
         dataConfig = YamlConfiguration.loadConfiguration(dataFile);
 
-        // Настройка файла для транзакций
         transactionsFile = new File(plugin.getDataFolder(), "transactions.yml");
         if (!transactionsFile.exists()) {
             try {
@@ -48,6 +57,14 @@ public class DataManager {
     }
 
     public void saveBalances(Map<String, Double> balances) {
+        if (storageType == StorageType.MYSQL) {
+            mySQLManager.saveBalances(balances);
+        } else {
+            saveBalancesYaml(balances);
+        }
+    }
+
+    private void saveBalancesYaml(Map<String, Double> balances) {
         for (Map.Entry<String, Double> entry : balances.entrySet()) {
             dataConfig.set("balances." + entry.getKey(), entry.getValue());
         }
@@ -59,6 +76,14 @@ public class DataManager {
     }
 
     public void loadBalances(Map<String, Double> balances) {
+        if (storageType == StorageType.MYSQL) {
+            mySQLManager.loadBalances(balances);
+        } else {
+            loadBalancesYaml(balances);
+        }
+    }
+
+    private void loadBalancesYaml(Map<String, Double> balances) {
         if (dataConfig.getConfigurationSection("balances") != null) {
             for (String uuid : dataConfig.getConfigurationSection("balances").getKeys(false)) {
                 balances.put(uuid, dataConfig.getDouble("balances." + uuid));
@@ -66,12 +91,22 @@ public class DataManager {
         }
     }
 
-    public void logTransaction(String from, String to, double amount, String type) {
+    public void logTransaction(String from, String to, double amount, String type, String fromName, String toName) {
+        if (storageType == StorageType.MYSQL) {
+            mySQLManager.logTransaction(from, to, amount, type, fromName, toName);
+        } else {
+            logTransactionYaml(from, to, amount, type, fromName, toName);
+        }
+    }
+
+    private void logTransactionYaml(String from, String to, double amount, String type, String fromName, String toName) {
         long timestamp = System.currentTimeMillis();
         String transactionKey = "transactions." + timestamp;
 
         transactionsConfig.set(transactionKey + ".from", from);
         transactionsConfig.set(transactionKey + ".to", to);
+        transactionsConfig.set(transactionKey + ".fromName", fromName);
+        transactionsConfig.set(transactionKey + ".toName", toName);
         transactionsConfig.set(transactionKey + ".amount", amount);
         transactionsConfig.set(transactionKey + ".type", type);
 
@@ -80,9 +115,32 @@ public class DataManager {
         } catch (IOException e) {
             plugin.getLogger().severe("Не удалось сохранить транзакцию!");
         }
+
+        // Логирование в консоль с никами игроков
+        String action = "Транзакция";
+        if (type.equals("ADMIN_GIVE")) {
+            action = "Соврешена Выдача";
+        } else if (type.equals("ADMIN_TAKE")) {
+            action = "Совершено изьятие";
+        } else if (type.equals("ADMIN_SET")) {
+            action = "Изменен баланс";
+        }
+
+        String logMessage = String.format("%s -> %s: %s %s",
+                fromName,
+                toName,
+                plugin.getEconomy().format(amount),
+                type);
+        plugin.logTransaction(fromName, action, logMessage);
     }
 
-    public FileConfiguration getTransactions() {
-        return transactionsConfig;
+    public void shutdown() {
+        if (storageType == StorageType.MYSQL && mySQLManager != null) {
+            mySQLManager.disconnect();
+        }
+    }
+
+    public enum StorageType {
+        YAML, MYSQL
     }
 }

@@ -59,7 +59,9 @@ public class PayCommand implements CommandExecutor {
                     player.getUniqueId().toString(),
                     target.getUniqueId().toString(),
                     amount,
-                    "PLAYER_TO_PLAYER"
+                    "PLAYER_TO_PLAYER",
+                    player.getName(),
+                    target.getName()
             );
 
             String formattedAmount = plugin.getEconomy().format(amount);

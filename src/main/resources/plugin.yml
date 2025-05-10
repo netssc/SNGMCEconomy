@@ -2,6 +2,8 @@ name: SNGMCEconomy
 version: 1.0
 main: sngmc.build.SNGMCEconomy
 depend: [Vault]
+author: [SNGMC]
+website: plugins.sngmc.ru
 commands:
   balance:
     description: Проверить баланс
@@ -9,17 +11,9 @@ commands:
   pay:
     description: Перевести деньги игроку
     usage: /pay <игрок> <сумма>
-  setmoney:
-    description: Установить баланс игрока
-    usage: /setmoney <игрок> <сумма>
-    permission: sngmceconomy.admin
-  givemoney:
-    description: Выдать деньги игроку
-    usage: /givemoney <игрок> <сумма>
-    permission: sngmceconomy.admin
-  takemoney:
-    description: Забрать деньги у игрока
-    usage: /takemoney <игрок> <сумма>
+  eco:
+    description: Управление экономикой (админ)
+    usage: /eco <give|set|take> <игрок> <сумма>
     permission: sngmceconomy.admin
 permissions:
   sngmceconomy.admin:

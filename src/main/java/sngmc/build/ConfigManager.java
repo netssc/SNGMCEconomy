@@ -27,6 +27,12 @@ public class ConfigManager {
         config = YamlConfiguration.loadConfiguration(configFile);
 
         // Добавляем все сообщения по умолчанию
+        config.addDefault("storage.type", "YAML"); // YAML или MYSQL
+        config.addDefault("database.host", "localhost");
+        config.addDefault("database.port", 3306);
+        config.addDefault("database.database", "minecraft");
+        config.addDefault("database.username", "root");
+        config.addDefault("database.password", "");
         config.addDefault("messages.prefix", "&x&0&3&4&B&B&C&ls&x&1&1&5&C&C&4&lʏ&x&2&0&6&D&C&B&ls&x&2&E&7&E&D&3&lᴛ&x&3&D&9&0&D&B&lᴇ&x&4&B&A&1&E&3&lᴍ &x&6&8&C&3&F&2• &r&f");
         config.addDefault("messages.no-permission", "&cУ вас нет прав на использование этой команды!");
         config.addDefault("messages.player-not-found", "&cИгрок не найден или не в сети!");
@@ -39,15 +45,13 @@ public class ConfigManager {
         config.addDefault("messages.money-given", "Вы выдали %amount% игроку %player%");
         config.addDefault("messages.money-taken", "Вы забрали %amount% у игрока %player%");
         config.addDefault("messages.money-set", "Вы установили баланс %player% на %amount%");
-        config.addDefault("messages.self-payment", "&cВы не можете отправить деньги себе!");
-        config.addDefault("messages.usagepay", "&eИспользование: /pay <игрок> <сумма>");
-        config.addDefault("messages.usagebalance", "&eИспользование: /balance [игрок]");
-        config.addDefault("messages.usagegivemoney", "&eИспользование: /givemoney <игрок> <сумма>");
-        config.addDefault("messages.usagetakemoney", "&eИспользование: /takemoney <игрок> <сумма>");
-        config.addDefault("messages.usagesetmoney", "&eИспользование: /setmoney <игрок> <сумма>");
-        config.addDefault("messages.transaction-success", "&aТранзакция успешно выполнена!");
-        config.addDefault("messages.transaction-failed", "&cОшибка транзакции!");
-        config.addDefault("messages.negative-balance", "&cБаланс не может быть отрицательным!");
+        config.addDefault("messages.self-payment", "Вы не можете отправить деньги себе!");
+        config.addDefault("messages.usagepay", "Использование: /pay <игрок> <сумма>");
+        config.addDefault("messages.usagebalance", "Использование: /balance [игрок]");
+        config.addDefault("messages.usageeco", "Использование: /eco <give|set|take> <игрок> <сумма>");
+        config.addDefault("messages.transaction-success", "Транзакция успешно выполнена!");
+        config.addDefault("messages.transaction-failed", "Ошибка транзакции!");
+        config.addDefault("messages.negative-balance", "Баланс не может быть отрицательным!");
 
         config.options().copyDefaults(true);
         saveConfig();
