@@ -117,13 +117,13 @@ public class DataManager {
         }
 
         // Логирование в консоль с никами игроков
-        String action = "Транзакция";
+        String action = "TRANSACTION";
         if (type.equals("ADMIN_GIVE")) {
-            action = "Соврешена Выдача";
+            action = "GIVE";
         } else if (type.equals("ADMIN_TAKE")) {
-            action = "Совершено изьятие";
+            action = "TAKE";
         } else if (type.equals("ADMIN_SET")) {
-            action = "Изменен баланс";
+            action = "SET";
         }
 
         String logMessage = String.format("%s -> %s: %s %s",
@@ -134,8 +134,11 @@ public class DataManager {
         plugin.logTransaction(fromName, action, logMessage);
     }
 
-    public void shutdown() {
+    public void shutdown(Map<String, Double> balances) {
         if (storageType == StorageType.MYSQL && mySQLManager != null) {
+            // Сначала сохраняем данные
+            mySQLManager.saveBalances(balances);
+            // Затем закрываем соединение
             mySQLManager.disconnect();
         }
     }
